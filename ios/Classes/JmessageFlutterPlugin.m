@@ -197,7 +197,19 @@ typedef void (^JMSGConversationCallback)(JMSGConversation *conversation,NSError 
       break;
     }
     case kJMSGConversationTypeGroup:{
-      message = [JMSGMessage createGroupMessageWithContent:content groupId:param[@"groupId"]];
+        if (param[@"at_list"] != NULL && [param[@"at_list"] isKindOfClass:NSArray.class]) {
+            NSArray<NSString *> *atList = param[@"at_list"];
+            NSMutableArray<JMSGUser *> *userList = [NSMutableArray array];
+            for (NSString *uid in atList) {
+                JMSGUser *user = [JMSGUser userWithUid:uid.intValue];
+                if (user != NULL) {
+                    [userList addObject:user];
+                }
+            }
+            message = [JMSGMessage createGroupMessageWithContent:content groupId:param[@"groupId"] at_list: userList];
+        }else {
+            message = [JMSGMessage createGroupMessageWithContent:content groupId:param[@"groupId"]];
+        }
       break;
     }
       

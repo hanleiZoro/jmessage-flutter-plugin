@@ -473,6 +473,7 @@ class JmessageFlutter {
     int scale,
     String address,
     Map<dynamic, dynamic> extras,
+    List<String> atList,
   }) async {
     Map param = targetType.toJson();
     
@@ -490,6 +491,8 @@ class JmessageFlutter {
       'longitude': longitude,
       'scale': scale,
       'address': address,
+      if (atList != null)
+        'at_list': atList
       });
 
     Map resMap = await _channel.invokeMethod('createMessage', 
