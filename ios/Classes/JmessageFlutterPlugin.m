@@ -197,8 +197,8 @@ typedef void (^JMSGConversationCallback)(JMSGConversation *conversation,NSError 
       break;
     }
     case kJMSGConversationTypeGroup:{
-        if (param[@"at_list"] != NULL && [param[@"at_list"] isKindOfClass:NSArray.class]) {
-            NSArray<NSString *> *atList = param[@"at_list"];
+        if (param[@"atList"] != NULL && [param[@"atList"] isKindOfClass:NSArray.class]) {
+            NSArray<NSString *> *atList = param[@"atList"];
             NSMutableArray<JMSGUser *> *userList = [NSMutableArray array];
             for (NSString *uid in atList) {
                 JMSGUser *user = [JMSGUser userWithUid:uid.intValue];
