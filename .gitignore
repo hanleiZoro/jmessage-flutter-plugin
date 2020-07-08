@@ -8,3 +8,8 @@ pubspec.lock
 build/
 .idea/
 flutter.jar
+android/.classpath
+android/.project
+example/android/.project
+example/android/.settings/org.eclipse.buildship.core.prefs
+android/.settings/

@@ -32,9 +32,15 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
     implementation 'cn.jiguang.sdk:jmessage:2.9.0'
-    implementation 'cn.jiguang.sdk:jcore:2.2.6'
+    // implementation 'cn.jiguang.sdk:jcore:2.2.6'
+    compileOnly files('libs/jcore-android-2.2.6-google_play.jar')
 }
