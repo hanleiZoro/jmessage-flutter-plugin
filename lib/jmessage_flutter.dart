@@ -1888,6 +1888,7 @@ class JMNormalMessage {
       from = JMUserInfo.fromJson(json['from']),
       extras = json['extras'] {
         switch (json['target']['type']) {
+          case 'single':
           case 'user':
             target = JMUserInfo.fromJson(json['target']);
             break;
