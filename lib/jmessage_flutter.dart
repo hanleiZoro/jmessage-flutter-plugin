@@ -1954,6 +1954,7 @@ class JMTextMessage extends JMNormalMessage {
 }
 
 class JMVoiceMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.voice;
   String path; // 语音文件路径,如果为空需要调用相应下载方法，注意这是本地路径，不能是 url
   num duration; // 语音时长，单位秒
 
@@ -1961,6 +1962,7 @@ class JMVoiceMessage extends JMNormalMessage {
     var json = super.toJson();
     json['path'] = path;
     json['duration'] = duration;
+    json['type'] = getStringFromEnum(JMMessageType.voice);
     return json;
   }
 
@@ -1971,11 +1973,13 @@ class JMVoiceMessage extends JMNormalMessage {
 }
 
 class JMImageMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.image;
   String thumbPath; // 图片的缩略图路径, 如果为空需要调用相应下载方法
 
   Map toJson() {
     var json = super.toJson();
     json['thumbPath'] = thumbPath;
+    json['type'] = getStringFromEnum(JMMessageType.image);
     return json;
   }
 
@@ -1985,10 +1989,12 @@ class JMImageMessage extends JMNormalMessage {
 }
 
 class JMFileMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.file;
   String fileName; // 文件名
 
   Map toJson() {
     var json = super.toJson();
+    json['type'] = getStringFromEnum(JMMessageType.file);
     json['fileName'] = fileName;
     return json;
   }
@@ -1999,6 +2005,7 @@ class JMFileMessage extends JMNormalMessage {
 }
 
 class JMLocationMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.location;
   double longitude;  // 经度
   double latitude;   // 纬度
   int scale;      // 地图缩放比例
@@ -2023,10 +2030,12 @@ class JMLocationMessage extends JMNormalMessage {
 }
 
 class JMCustomMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.custom;
   Map<dynamic, dynamic> customObject; // 自定义键值对
   
   Map toJson() {
     var json = super.toJson();
+    json['type'] = getStringFromEnum(JMMessageType.custom);
     json['customObject'] = customObject;
     return json;
   }
@@ -2038,6 +2047,7 @@ class JMCustomMessage extends JMNormalMessage {
 
 
 class JMPromptMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.prompt;
   String promptText;
 
   Map toJson() {
@@ -2056,11 +2066,13 @@ enum JMEventType {
 }
 
 class JMEventMessage extends JMNormalMessage {
+  final JMMessageType type = JMMessageType.event;
   JMEventType eventType; // 事件类型
   List<dynamic> usernames; // List<String>
 
   Map toJson() {
     var json = super.toJson();
+    json['type'] = getStringFromEnum(JMMessageType.event);
     json['eventType'] = getStringFromEnum(eventType);
     json['usernames'] = usernames;
     return json;
