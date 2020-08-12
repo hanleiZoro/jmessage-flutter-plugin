@@ -1866,6 +1866,7 @@ class JMNormalMessage {
   int createTime;// 发送消息时间
   Map<dynamic, dynamic> extras;// 附带的键值对
   dynamic target;  // JMUserInfo | JMGroupInfo
+  int msgState; // 服务器消息状态 0正常 1删除
 
   Map toJson() {
     return {
@@ -1875,7 +1876,8 @@ class JMNormalMessage {
         'from': from.toJson(),
         'createTime': createTime,
         'extras': extras,
-        'target': target.toJson()
+        'target': target.toJson(),
+        'msgState': msgState
       };
   }
 
@@ -1886,6 +1888,7 @@ class JMNormalMessage {
       isSend = json['isSend'],
       state =  getEnumFromString(JMMessageState.values, json['state']),
       from = JMUserInfo.fromJson(json['from']),
+      msgState = json['msgState'],
       extras = json['extras'] {
         switch (json['target']['type']) {
           case 'single':
