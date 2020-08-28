@@ -1868,6 +1868,11 @@ class JMNormalMessage {
   dynamic target;  // JMUserInfo | JMGroupInfo
   int msgState; // 服务器消息状态 0正常 1删除
 
+  /// 消息是否删除 0正常 1删除
+  int delFlag;
+
+  bool get isDelete => delFlag == 1;
+
   Map toJson() {
     return {
         'id': id,
@@ -1877,7 +1882,8 @@ class JMNormalMessage {
         'createTime': createTime,
         'extras': extras,
         'target': target.toJson(),
-        'msgState': msgState
+        'msgState': msgState,
+        'delFlag': delFlag
       };
   }
 
@@ -1889,6 +1895,7 @@ class JMNormalMessage {
       state =  getEnumFromString(JMMessageState.values, json['state']),
       from = JMUserInfo.fromJson(json['from']),
       msgState = json['msgState'],
+      delFlag = json['delFlag'],
       extras = json['extras'] {
         switch (json['target']['type']) {
           case 'single':
