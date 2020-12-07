@@ -749,7 +749,7 @@ class JmessageFlutter {
    * @param isDescend 是否倒叙
    *
    * */
-  Future<List> getHistoryMessages({
+  Future<List<JMNormalMessage>> getHistoryMessages({
     @required dynamic type, /// (JMSingle | JMGroup)
     @required int from,
     @required int limit,
@@ -763,19 +763,12 @@ class JmessageFlutter {
       'isDescend': isDescend
       });
 
-    List resArr = await _channel.invokeMethod('getHistoryMessages', 
-      param..removeWhere((key,value) => value == null));
+    List resArr = await _channel.invokeMethod('getHistoryMessages',
+        param..removeWhere((key,value) => value == null));
 
-    List res = [];
-    for (Map messageMap in resArr) {
-      dynamic d = JMNormalMessage.generateMessageFromJson(messageMap);
-      if (d != null) {
-        res.add(d);
-      }else{
-        print("get history msg, get a message is null");
-      }
-    }
-    //var res = resArr.map((messageMap) => JMNormalMessage.generateMessageFromJson(messageMap)).toList();
+    List<JMNormalMessage> res = List<JMNormalMessage>.from(
+        resArr.map((messageMap) => JMNormalMessage.generateMessageFromJson(messageMap)));
+
     return res;
   }
 
