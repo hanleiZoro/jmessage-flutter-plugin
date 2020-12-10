@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -18,8 +16,6 @@ import cn.jpush.im.android.api.callback.GetReceiptDetailsCallback;
 import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.enums.PlatformType;
 import cn.jpush.im.android.api.event.MessageReceiptStatusChangeEvent;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -90,11 +86,11 @@ import static com.jiguang.jmessageflutter.JsonUtils.fromJson;
 import static com.jiguang.jmessageflutter.JsonUtils.toJson;
 
 /** JmessageFlutterPlugin */
-public class JmessageFlutterPlugin implements MethodCallHandler, FlutterPlugin {
+public class JmessageFlutterPlugin implements MethodCallHandler {
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
     final MethodChannel channel = new MethodChannel(registrar.messenger(), "jmessage_flutter");
-    channel.setMethodCallHandler(new JmessageFlutterPlugin());
+    channel.setMethodCallHandler(new JmessageFlutterPlugin(registrar, channel));
   }
 
   public static JmessageFlutterPlugin instance;
@@ -114,30 +110,19 @@ public class JmessageFlutterPlugin implements MethodCallHandler, FlutterPlugin {
   static final String ERR_MSG_PERMISSION_WRITE_EXTERNAL_STORAGE = "Do not have 'WRITE_EXTERNAL_STORAGE' permission";
 
   static String appKey = null;
-  private MethodChannel channel;
+  private final Registrar registrar;
+  private final MethodChannel channel;
 
   private Context mContext;
 
   public static HashMap<String, GroupApprovalEvent> groupApprovalEventHashMap = new HashMap<>();
 
-  private MethodChannel methodChannel;
+  private JmessageFlutterPlugin(Registrar registrar, MethodChannel channel) {
 
-  @Override
-  public void onAttachedToEngine(FlutterPluginBinding binding) {
-    onAttachedToEngine(binding.getApplicationContext(), binding.getBinaryMessenger());
-  }
-
-  private void onAttachedToEngine(Context applicationContext, BinaryMessenger messenger) {
-    this.mContext = applicationContext;
-    channel = new MethodChannel(messenger, "jmessage_flutter");
-    channel.setMethodCallHandler(this);
-  }
-
-  @Override
-  public void onDetachedFromEngine(FlutterPluginBinding binding) {
-    mContext = null;
-    channel.setMethodCallHandler(null);
-    channel = null;
+    this.registrar = registrar;
+    this.channel = channel;
+    JmessageFlutterPlugin.instance = this;
+    mContext = registrar.context();
   }
 
   @Override
@@ -340,7 +325,7 @@ public class JmessageFlutterPlugin implements MethodCallHandler, FlutterPlugin {
       if (params.has("appkey")) {
         JmessageFlutterPlugin.appKey = params.getString("appkey");
       }
-      JMessageClient.init(mContext, isOpenMessageRoaming);
+      JMessageClient.init(registrar.context(), isOpenMessageRoaming);
       JMessageClient.registerEventReceiver(this);
     } catch (JSONException e) {
       e.printStackTrace();
@@ -983,7 +968,7 @@ public class JmessageFlutterPlugin implements MethodCallHandler, FlutterPlugin {
     }
 
     try {
-      MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(path));
+      MediaPlayer mediaPlayer = MediaPlayer.create(registrar.context(), Uri.parse(path));
       int duration = mediaPlayer.getDuration() / 1000; // Millisecond to second.
 
       File file = getFile(path);
