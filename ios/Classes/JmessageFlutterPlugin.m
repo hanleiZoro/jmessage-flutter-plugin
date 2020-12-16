@@ -556,13 +556,14 @@ typedef void (^JMSGConversationCallback)(JMSGConversation *conversation,NSError 
   }
   
   [JMessage addDelegate:self withConversation:nil];
-  
-  [JMessage setupJMessage:self.launchOptions
-                   appKey:appkey
-                  channel:channel
-         apsForProduction:isProduction
-                 category:nil
-           messageRoaming:isOpenMessageRoaming];
+
+  // 登录失败 
+  // [JMessage setupJMessage:self.launchOptions
+  //                  appKey:appkey
+  //                 channel:channel
+  //        apsForProduction:isProduction
+  //                category:nil
+  //          messageRoaming:isOpenMessageRoaming];
 }
 
 - (void)setDebugMode:(FlutterMethodCall*)call result:(FlutterResult)result {
