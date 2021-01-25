@@ -1900,7 +1900,8 @@ enum JMMessageState {
   send_failed, // 发送失败
   upload_succeed, // 上传成功
   upload_failed, // 上传失败
-  download_failed // 接收消息时自动下载资源失败
+  download_failed, // 接收消息时自动下载资源失败
+  black_list //黑名单发送失败状态
 }
 
 class JMNormalMessage {
@@ -1917,6 +1918,8 @@ class JMNormalMessage {
 
   /// 消息是否删除 0正常 1删除
   int delFlag;
+
+  
 
   bool get isDelete => delFlag == 1;
 
