@@ -1919,8 +1919,6 @@ class JMNormalMessage {
   /// 消息是否删除 0正常 1删除
   int delFlag;
 
-  
-
   bool get isDelete => delFlag == 1;
 
   Map toJson() {
@@ -1933,7 +1931,8 @@ class JMNormalMessage {
         'extras': extras,
         'target': target.toJson(),
         'msgState': msgState,
-        'delFlag': delFlag
+        'delFlag': delFlag,
+        'state': getStringFromEnum<JMMessageState>(state)
       };
   }
 
