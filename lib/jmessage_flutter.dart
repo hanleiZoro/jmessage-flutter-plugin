@@ -1933,7 +1933,8 @@ class JMNormalMessage {
         'extras': extras,
         'target': target.toJson(),
         'msgState': msgState,
-        'delFlag': delFlag
+        'delFlag': delFlag,
+        'state': getStringFromEnum<JMMessageState>(state)
       };
   }
 
