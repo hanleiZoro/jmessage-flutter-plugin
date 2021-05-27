@@ -16,3 +16,4 @@ android/.settings/
 /example/.flutter-plugins-dependencies
 /example/ios/Flutter/flutter_export_environment.sh
 /jmessage_flutter.iml
+jmessage_flutter_android.iml
