@@ -11,3 +11,5 @@ flutter.jar
 example/.flutter-plugins-dependencies
 jmessage_flutter_android.iml
 example/ios/Flutter/flutter_export_environment.sh
+/example/.flutter-plugins-dependencies
+/example/ios/Flutter/flutter_export_environment.sh
