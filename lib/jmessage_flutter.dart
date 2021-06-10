@@ -6,8 +6,22 @@ import 'package:platform/platform.dart';
 final String flutterLog = "| JMessage | Flutter | ";
 
 T getEnumFromString<T>(Iterable<T> values, String str) {
+  print("values = ${values}, String = ${str}");
   return values.firstWhere((f) => f.toString().split('.').last == str,
       orElse: null);
+}
+
+JMMessageState getMessageStateString(Iterable values, String? str){
+  if(str == null){
+    return JMMessageState.none;
+  }
+
+  JMMessageState state;
+
+  state = values.firstWhere((f) => f.toString().split('.').last == str,
+      orElse: () => JMMessageState.none);
+
+  return state;
 }
 
 String? getStringFromEnum<T>(T) {
@@ -629,7 +643,7 @@ class JmessageFlutter {
     @required String? text,
     JMMessageSendOptions? sendOption,
     Map<dynamic, dynamic>? extras,
-    List<String> atUsers
+    List<String>? atUsers
   }) async {
     Map param = type.toJson();
     Map optionMap = {};
@@ -1992,7 +2006,8 @@ enum JMMessageState {
   upload_succeed, // 上传成功
   upload_failed, // 上传失败
   download_failed, // 接收消息时自动下载资源失败
-  black_list //黑名单发送失败状态
+  black_list, //黑名单发送失败状态
+  none,
 }
 
 class JMNormalMessage {
@@ -2033,7 +2048,7 @@ class JMNormalMessage {
         createTime = json['createTime'],
         serverMessageId = json['serverMessageId'],
         isSend = json['isSend'],
-        state = getEnumFromString(JMMessageState.values, json['state']),
+        state = getMessageStateString(JMMessageState.values, json['state']),
         from = JMUserInfo.fromJson(json['from']),
         msgState = json['msgState'],
         delFlag = json['delFlag'],
