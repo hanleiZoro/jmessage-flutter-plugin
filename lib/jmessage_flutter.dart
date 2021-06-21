@@ -6,7 +6,7 @@ import 'package:platform/platform.dart';
 final String flutterLog = "| JMessage | Flutter | ";
 
 T getEnumFromString<T>(Iterable<T> values, String str) {
-  print("values = ${values}, String = ${str}");
+  // print("values = ${values}, String = ${str}");
   return values.firstWhere((f) => f.toString().split('.').last == str,
       orElse: null);
 }
@@ -457,7 +457,7 @@ class JmessageFlutter {
     }
     print("Action - login: username=$username,pw=$password");
 
-    Map userJson = await _channel
+    Map? userJson = await _channel
         .invokeMethod('login', {'username': username, 'password': password});
     if (userJson == null) {
       return null;
@@ -2019,12 +2019,12 @@ class JMNormalMessage {
   int createTime; // 发送消息时间
   Map<dynamic, dynamic> extras; // 附带的键值对
   dynamic target; // JMUserInfo | JMGroupInfo
-  int msgState; // 服务器消息状态 0正常 1删除
+  int? msgState; // 服务器消息状态 0正常 1删除
 
   /// 消息是否删除 0正常 1删除
-  int delFlag;
+  int? delFlag;
 
-  bool get isDelete => delFlag == 1;
+  bool? get isDelete => delFlag == 1;
 
   Map toJson() {
     return {
@@ -2364,7 +2364,7 @@ class JMReceiveGroupAdminApprovalEvent {
 
 class JMGroupInfo {
   String id; // 群组 id
-  String name; // 群组名称
+  String? name; // 群组名称
   String desc; // 群组描述
   int level; // 群组等级，默认等级 4
   String owner; // 群主的 username
