@@ -568,7 +568,7 @@ class JmessageFlutter {
     return res; // {id: string; filePath: string}
   }
 
-  Future<dynamic> createMessage({
+  Future<JMNormalMessage> createMessage({
     @required JMMessageType? type, // 消息类型
     @required dynamic targetType,
 
@@ -615,7 +615,7 @@ class JmessageFlutter {
 
   /// message 可能是 JMTextMessage | JMVoiceMessage | JMImageMessage | JMFileMessage | JMCustomMessage;
   /// NOTE: 不要传接收到的消息进去，只能传通过 createMessage 创建的消息。
-  Future<dynamic> sendMessage(
+  Future<JMNormalMessage> sendMessage(
       {@required JMNormalMessage? message,
       JMMessageSendOptions? sendOption}) async {
     Map param = message?.target?.targetType.toJson();
@@ -1881,7 +1881,7 @@ class JMMessageSendOptions {
   String notificationText;
 
   /// 设置这条消息的发送是否需要对方发送已读回执，false，默认值
-  bool needReadReceipt = false;
+  bool? needReadReceipt = false;
 
   Map toJson() {
     return {
