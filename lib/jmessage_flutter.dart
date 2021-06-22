@@ -7,11 +7,7 @@ final String flutterLog = "| JMessage | Flutter | ";
 
 T getEnumFromString<T>(Iterable<T> values, String str) {
   // print("values = ${values}, String = ${str}");
-  return values.firstWhere((f) =>
-  f
-      .toString()
-      .split('.')
-      .last == str,
+  return values.firstWhere((f) => f.toString().split('.').last == str,
       orElse: null);
 }
 
@@ -22,11 +18,7 @@ JMMessageState getMessageStateString(Iterable values, String? str) {
 
   JMMessageState state;
 
-  state = values.firstWhere((f) =>
-  f
-      .toString()
-      .split('.')
-      .last == str,
+  state = values.firstWhere((f) => f.toString().split('.').last == str,
       orElse: () => JMMessageState.none);
 
   return state;
@@ -36,10 +28,7 @@ String? getStringFromEnum<T>(T) {
   if (T == null) {
     return null;
   }
-  return T
-      .toString()
-      .split('.')
-      .last;
+  return T.toString().split('.').last;
 }
 
 /// iOS 通知设置项
@@ -105,7 +94,7 @@ class JMEventHandlers {
 
   /// 收到：聊天室消息
   Map<String, JMReceiveChatRoomMessageListener> receiveChatRoomMessageMap =
-  Map();
+      Map();
 
   /// 收到：登录状态发生变更
   List<JMLoginStateChangedListener> loginStateChanged = [];
@@ -121,7 +110,7 @@ class JMEventHandlers {
 
   /// 收到：申请入群请求
   List<JMReceiveApplyJoinGroupApprovalListener> receiveApplyJoinGroupApproval =
-  [];
+      [];
 
   /// 收到：管理员拒绝事件
   List<JMReceiveGroupAdminRejectListener> receiveGroupAdminReject = [];
@@ -131,7 +120,7 @@ class JMEventHandlers {
 
   /// 收到：消息已读回执事件
   List<JMMessageReceiptStatusChangeListener> receiveReceiptStatusChangeEvents =
-  [];
+      [];
 
   /// 收到：消息撤回事件
   List<JMMessageRetractListener> retractMessage = [];
@@ -218,8 +207,8 @@ class JmessageFlutter {
     _eventHanders.receiveTransCommand.removeWhere((cb) => cb == callback);
   }
 
-  addReceiveChatRoomMessageListener(String listenerID,
-      JMReceiveChatRoomMessageListener callback) {
+  addReceiveChatRoomMessageListener(
+      String listenerID, JMReceiveChatRoomMessageListener callback) {
     if (listenerID == null) {
       print(flutterLog + "'listenerID' is can not be null.");
       return;
@@ -297,16 +286,16 @@ class JmessageFlutter {
         break;
       case 'onLoginStateChanged':
         for (JMLoginStateChangedListener cb
-        in _eventHanders.loginStateChanged) {
+            in _eventHanders.loginStateChanged) {
           String type = call.arguments.cast<dynamic, dynamic>()['type'];
           JMLoginStateChangedType loginState =
-          getEnumFromString(JMLoginStateChangedType.values, type);
+              getEnumFromString(JMLoginStateChangedType.values, type);
           cb(loginState);
         }
         break;
       case 'onSyncOfflineMessage':
         for (JMSyncOfflineMessageListener cb
-        in _eventHanders.syncOfflineMessage) {
+            in _eventHanders.syncOfflineMessage) {
           Map param = call.arguments.cast<dynamic, dynamic>();
           List msgDicArray = param['messageArray'];
 //            List<dynamic> msgs = msgDicArray.map((json) => JMNormalMessage.generateMessageFromJson(json)).toList();
@@ -315,7 +304,7 @@ class JmessageFlutter {
           for (Map json in msgDicArray) {
             print("offline message: ${json.toString()}");
             JMNormalMessage normsg =
-            JMNormalMessage.generateMessageFromJson(json);
+                JMNormalMessage.generateMessageFromJson(json);
             msgs.add(normsg);
           }
 
@@ -324,7 +313,7 @@ class JmessageFlutter {
         break;
       case 'onSyncRoamingMessage':
         for (JMSyncRoamingMessageListener cb
-        in _eventHanders.syncRoamingMessage) {
+            in _eventHanders.syncRoamingMessage) {
           Map json = call.arguments.cast<dynamic, dynamic>();
           cb(JMConversationInfo.fromJson(json));
         }
@@ -337,7 +326,7 @@ class JmessageFlutter {
         break;
       case 'onClickMessageNotification':
         for (JMMessageEventListener cb
-        in _eventHanders.clickMessageNotification) {
+            in _eventHanders.clickMessageNotification) {
           // TODO: only work in android
           Map json = call.arguments.cast<dynamic, dynamic>();
           cb(JMNormalMessage.generateMessageFromJson(json));
@@ -345,10 +334,10 @@ class JmessageFlutter {
         break;
       case 'onReceiveTransCommand':
         for (JMReceiveTransCommandListener cb
-        in _eventHanders.receiveTransCommand) {
+            in _eventHanders.receiveTransCommand) {
           Map json = call.arguments.cast<dynamic, dynamic>();
           JMReceiveTransCommandEvent ev =
-          JMReceiveTransCommandEvent.fromJson(json);
+              JMReceiveTransCommandEvent.fromJson(json);
           cb(ev);
         }
         break;
@@ -364,34 +353,34 @@ class JmessageFlutter {
         break;
       case 'onReceiveApplyJoinGroupApproval':
         for (JMReceiveApplyJoinGroupApprovalListener cb
-        in _eventHanders.receiveApplyJoinGroupApproval) {
+            in _eventHanders.receiveApplyJoinGroupApproval) {
           Map json = call.arguments.cast<dynamic, dynamic>();
           JMReceiveApplyJoinGroupApprovalEvent e =
-          JMReceiveApplyJoinGroupApprovalEvent.fromJson(json);
+              JMReceiveApplyJoinGroupApprovalEvent.fromJson(json);
           cb(e);
         }
         break;
       case 'onReceiveGroupAdminReject':
         for (JMReceiveGroupAdminRejectListener cb
-        in _eventHanders.receiveGroupAdminReject) {
+            in _eventHanders.receiveGroupAdminReject) {
           Map json = call.arguments.cast<dynamic, dynamic>();
           cb(JMReceiveGroupAdminRejectEvent.fromJson(json));
         }
         break;
       case 'onReceiveGroupAdminApproval':
         for (JMReceiveGroupAdminApprovalListener cb
-        in _eventHanders.receiveGroupAdminApproval) {
+            in _eventHanders.receiveGroupAdminApproval) {
           Map json = call.arguments.cast<dynamic, dynamic>();
           cb(JMReceiveGroupAdminApprovalEvent.fromJson(json));
         }
         break;
       case 'onReceiveMessageReceiptStatusChange':
         for (JMMessageReceiptStatusChangeListener cb
-        in _eventHanders.receiveReceiptStatusChangeEvents) {
+            in _eventHanders.receiveReceiptStatusChangeEvents) {
           Map param = call.arguments.cast<dynamic, dynamic>();
           List<String> serverMessageIdList = param['serverMessageIdList'];
           JMConversationInfo conversationInfo =
-          JMConversationInfo.fromJson(param['conversation']);
+              JMConversationInfo.fromJson(param['conversation']);
           cb(conversationInfo, serverMessageIdList);
         }
         break;
@@ -416,8 +405,7 @@ class JmessageFlutter {
           'appkey': appkey,
           'channel': channel,
           'isProduction': isProduction
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
   }
 
   void setDebugMode({bool enable = false}) {
@@ -427,8 +415,9 @@ class JmessageFlutter {
   ///
   /// 申请推送权限，注意这个方法只会向用户弹出一次推送权限请求（如果用户不同意，之后只能用户到设置页面里面勾选相应权限），需要开发者选择合适的时机调用。
   ///
-  void applyPushAuthority([JMNotificationSettingsIOS iosSettings =
-  const JMNotificationSettingsIOS()]) {
+  void applyPushAuthority(
+      [JMNotificationSettingsIOS iosSettings =
+          const JMNotificationSettingsIOS()]) {
     if (!_platform.isIOS) {
       return;
     }
@@ -446,9 +435,10 @@ class JmessageFlutter {
     return;
   }
 
-  Future<void> userRegister({@required String? username,
-    @required String? password,
-    String? nickname}) async {
+  Future<void> userRegister(
+      {@required String? username,
+      @required String? password,
+      String? nickname}) async {
     print("Action - userRegister: username=$username,pw=$password");
     await _channel.invokeMethod('userRegister',
         {'username': username, 'password': password, 'nickname': nickname});
@@ -510,13 +500,14 @@ class JmessageFlutter {
     return;
   }
 
-  Future<void> updateMyInfo({int? birthday,
-    String? nickname,
-    String? signature,
-    String? region,
-    String? address,
-    JMGender? gender,
-    Map<dynamic, dynamic>? extras}) async {
+  Future<void> updateMyInfo(
+      {int? birthday,
+      String? nickname,
+      String? signature,
+      String? region,
+      String? address,
+      JMGender? gender,
+      Map<dynamic, dynamic>? extras}) async {
     await _channel.invokeMethod(
         'updateMyInfo',
         {
@@ -527,8 +518,7 @@ class JmessageFlutter {
           'address': address,
           'gender': getStringFromEnum(gender),
           'extras': extras,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     return;
   }
 
@@ -539,8 +529,7 @@ class JmessageFlutter {
         {
           'id': id,
           'imgPath': imgPath,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     return;
   }
 
@@ -551,8 +540,7 @@ class JmessageFlutter {
         'downloadThumbGroupAvatar',
         {
           'id': id,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     return res;
   }
 
@@ -563,15 +551,15 @@ class JmessageFlutter {
         'downloadOriginalGroupAvatar',
         {
           'id': id,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     return {'id': res['id'], 'filePath': res['filePath']};
   }
 
-  Future<JMConversationInfo> setConversationExtras({dynamic type,
+  Future<JMConversationInfo> setConversationExtras(
+      {dynamic type,
 
-    /// (JMSingle | JMGroup | JMChatRoom)
-    Map<dynamic, dynamic>? extras}) async {
+      /// (JMSingle | JMGroup | JMChatRoom)
+      Map<dynamic, dynamic>? extras}) async {
     var param = type.toJson();
     param['extras'] = extras;
     Map resMap = await _channel.invokeMethod('setConversationExtras',
@@ -580,22 +568,21 @@ class JmessageFlutter {
     return res; // {id: string; filePath: string}
   }
 
-  Future<JMNormalMessage> createMessage({
-    @required JMMessageType? type, // 消息类型
-    @required dynamic targetType,
+  Future<JMNormalMessage> createMessage(
+      {@required JMMessageType? type, // 消息类型
+      @required dynamic targetType,
 
-    /// (JMSingle | JMGroup | JMChatRoom)
-    String? text,
-    String? path,
-    String? fileName,
-    Map<dynamic, dynamic>? customObject,
-    double? latitude,
-    double? longitude,
-    int? scale,
-    String? address,
-    Map<dynamic, dynamic>? extras,
-    List<String>? atList
-  }) async {
+      /// (JMSingle | JMGroup | JMChatRoom)
+      String? text,
+      String? path,
+      String? fileName,
+      Map<dynamic, dynamic>? customObject,
+      double? latitude,
+      double? longitude,
+      int? scale,
+      String? address,
+      Map<dynamic, dynamic>? extras,
+      List<String>? atList}) async {
     Map param = targetType.toJson();
 
     if (extras != null) {
@@ -627,8 +614,9 @@ class JmessageFlutter {
 
   /// message 可能是 JMTextMessage | JMVoiceMessage | JMImageMessage | JMFileMessage | JMCustomMessage;
   /// NOTE: 不要传接收到的消息进去，只能传通过 createMessage 创建的消息。
-  Future<JMNormalMessage> sendMessage({@required JMNormalMessage? message,
-    JMMessageSendOptions? sendOption}) async {
+  Future<JMNormalMessage> sendMessage(
+      {@required JMNormalMessage? message,
+      JMMessageSendOptions? sendOption}) async {
     Map param = message?.target?.targetType.toJson();
 
     Map optionMap = {};
@@ -647,15 +635,14 @@ class JmessageFlutter {
     return res;
   }
 
-  Future<JMTextMessage> sendTextMessage({
-    @required dynamic type,
+  Future<JMTextMessage> sendTextMessage(
+      {@required dynamic type,
 
-    /// (JMSingle | JMGroup | JMChatRoom)
-    @required String? text,
-    JMMessageSendOptions? sendOption,
-    Map<dynamic, dynamic>? extras,
-    List<String>? atUsers
-  }) async {
+      /// (JMSingle | JMGroup | JMChatRoom)
+      @required String? text,
+      JMMessageSendOptions? sendOption,
+      Map<dynamic, dynamic>? extras,
+      List<String>? atUsers}) async {
     Map param = type.toJson();
     Map optionMap = {};
     if (sendOption != null) {
@@ -796,12 +783,14 @@ class JmessageFlutter {
       param..addAll({'extras': extras});
     }
 
-    param..addAll(optionMap)..addAll({
-      'latitude': latitude,
-      'longitude': longitude,
-      'scale': scale,
-      'address': address,
-    });
+    param
+      ..addAll(optionMap)
+      ..addAll({
+        'latitude': latitude,
+        'longitude': longitude,
+        'scale': scale,
+        'address': address,
+      });
 
     Map resMap = await _channel.invokeMethod('sendLocationMessage',
         param..removeWhere((key, value) => value == null));
@@ -872,12 +861,13 @@ class JmessageFlutter {
    * @param isDescend 是否倒叙
    *
    * */
-  Future<List> getHistoryMessages({@required dynamic type,
+  Future<List> getHistoryMessages(
+      {@required dynamic type,
 
-    /// (JMSingle | JMGroup)
-    @required int? from,
-    @required int? limit,
-    bool isDescend = false}) async {
+      /// (JMSingle | JMGroup)
+      @required int? from,
+      @required int? limit,
+      bool isDescend = false}) async {
     Map param = type.toJson();
 
     param..addAll({'from': from, 'limit': limit, 'isDescend': isDescend});
@@ -983,8 +973,7 @@ class JmessageFlutter {
           'username': username,
           'reason': reason,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -998,8 +987,7 @@ class JmessageFlutter {
         {
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1015,8 +1003,7 @@ class JmessageFlutter {
           'username': username,
           'reason': reason,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1030,8 +1017,7 @@ class JmessageFlutter {
         {
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1047,8 +1033,7 @@ class JmessageFlutter {
           'username': username,
           'noteName': noteName,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1064,8 +1049,7 @@ class JmessageFlutter {
           'username': username,
           'noteText': noteText,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1074,7 +1058,7 @@ class JmessageFlutter {
     List<dynamic> userJsons = await _channel.invokeMethod('getFriends');
 
     List<JMUserInfo> users =
-    userJsons.map((userMap) => JMUserInfo.fromJson(userMap)).toList();
+        userJsons.map((userMap) => JMUserInfo.fromJson(userMap)).toList();
     return users;
   }
 
@@ -1128,8 +1112,7 @@ class JmessageFlutter {
           'id': id,
           'usernameArray': usernameArray,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1145,8 +1128,7 @@ class JmessageFlutter {
           'id': id,
           'usernameArray': usernames,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1190,7 +1172,7 @@ class JmessageFlutter {
   Future<List<JMUserInfo>> getBlacklist() async {
     List userJsons = await _channel.invokeMethod('getBlacklist');
     List<JMUserInfo> res =
-    userJsons.map((json) => JMUserInfo.fromJson(json)).toList();
+        userJsons.map((json) => JMUserInfo.fromJson(json)).toList();
     return res;
   }
 
@@ -1211,9 +1193,9 @@ class JmessageFlutter {
     List groupJsons = resJson['groupInfoArray'];
 
     List<JMUserInfo> users =
-    userJsons.map((json) => JMUserInfo.fromJson(json)).toList();
+        userJsons.map((json) => JMUserInfo.fromJson(json)).toList();
     List<JMGroupInfo> groups =
-    groupJsons.map((json) => JMGroupInfo.fromJson(json)).toList();
+        groupJsons.map((json) => JMGroupInfo.fromJson(json)).toList();
 
     return {'userInfos': users, 'groupInfos': groups};
   }
@@ -1253,7 +1235,7 @@ class JmessageFlutter {
   Future<List<JMGroupInfo>> getBlockedGroupList() async {
     List resJson = await _channel.invokeMethod('getBlockedGroupList');
     List<JMGroupInfo> res =
-    resJson.map((json) => JMGroupInfo.fromJson(json)).toList();
+        resJson.map((json) => JMGroupInfo.fromJson(json)).toList();
     return res;
   }
 
@@ -1266,8 +1248,7 @@ class JmessageFlutter {
         {
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return {
       'username': resJson['username'],
@@ -1285,8 +1266,7 @@ class JmessageFlutter {
         {
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return {
       'username': resJson['username'],
@@ -1454,8 +1434,7 @@ class JmessageFlutter {
           'groupId': groupId,
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1473,8 +1452,7 @@ class JmessageFlutter {
           'username': username,
           'isSilence': isSilence,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1490,8 +1468,7 @@ class JmessageFlutter {
           'groupId': groupId,
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     return resJson['isSilence'];
   }
 
@@ -1502,10 +1479,9 @@ class JmessageFlutter {
         'groupSilenceMembers',
         {
           'groupId': groupId,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
     List<JMUserInfo> members =
-    memberJsons.map((json) => JMUserInfo.fromJson(json)).toList();
+        memberJsons.map((json) => JMUserInfo.fromJson(json)).toList();
     return members;
   }
 
@@ -1522,8 +1498,7 @@ class JmessageFlutter {
           'nickName': nickName,
           'username': username,
           'appKey': appKey,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1557,7 +1532,7 @@ class JmessageFlutter {
 
   Future<List<JMConversationInfo>> getChatRoomConversationList() async {
     List conversationJsons =
-    await _channel.invokeMethod('getChatRoomConversationList');
+        await _channel.invokeMethod('getChatRoomConversationList');
     List<JMConversationInfo> conversations = conversationJsons
         .map((json) => JMConversationInfo.fromJson(json))
         .toList();
@@ -1614,7 +1589,7 @@ class JmessageFlutter {
         {'appKey': appKey, 'start': start, 'count': count}
           ..removeWhere((key, value) => value == null));
     List<JMGroupInfo> groups =
-    groupJsons.map((json) => JMGroupInfo.fromJson(json)).toList();
+        groupJsons.map((json) => JMGroupInfo.fromJson(json)).toList();
     return groups;
   }
 
@@ -1643,8 +1618,7 @@ class JmessageFlutter {
           'isAgree': isAgree,
           'isRespondInviter': isRespondInviter,
           'reason': reason
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1656,8 +1630,7 @@ class JmessageFlutter {
         'dissolveGroup',
         {
           'groupId': groupId,
-        }
-          ..removeWhere((key, value) => value == null));
+        }..removeWhere((key, value) => value == null));
 
     return;
   }
@@ -1757,9 +1730,9 @@ class JmessageFlutter {
       List unreceiptJosnList = resultMap["unreceiptList"];
 
       List<JMUserInfo> receiptUserList =
-      receiptJosnList.map((json) => JMUserInfo.fromJson(json)).toList();
+          receiptJosnList.map((json) => JMUserInfo.fromJson(json)).toList();
       List<JMUserInfo> unreceiptUserList =
-      unreceiptJosnList.map((json) => JMUserInfo.fromJson(json)).toList();
+          unreceiptJosnList.map((json) => JMUserInfo.fromJson(json)).toList();
       callback(receiptUserList, unreceiptUserList);
     } else {
       callback(null, null);
@@ -2322,7 +2295,7 @@ class JMReceiveTransCommandEvent {
 
   JMReceiveTransCommandEvent.fromJson(Map<dynamic, dynamic> json)
       : receiverType =
-  getEnumFromString(JMTargetType.values, json['receiverType']),
+            getEnumFromString(JMTargetType.values, json['receiverType']),
         message = json['message'],
         sender = JMUserInfo.fromJson(json['sender']) {
     switch (receiverType) {
@@ -2474,7 +2447,7 @@ class JMGroupMemberInfo {
       : user = JMUserInfo.fromJson(json['user']),
         groupNickname = json['groupNickname'],
         memberType =
-        getEnumFromString(JMGroupMemberType.values, json['memberType']),
+            getEnumFromString(JMGroupMemberType.values, json['memberType']),
         joinGroupTime = json['joinGroupTime'];
 }
 
@@ -2534,7 +2507,7 @@ class JMConversationInfo {
 
   JMConversationInfo.fromJson(Map<dynamic, dynamic> json)
       : conversationType = getEnumFromString(
-      JMConversationType.values, json['conversationType']),
+            JMConversationType.values, json['conversationType']),
         title = json['title'],
         unreadCount = json['unreadCount'],
         extras = json['extras'] {
@@ -2669,9 +2642,10 @@ class JMConversationInfo {
   }
 
   // getHistoryMessages
-  Future<List> getHistoryMessages({@required int? from,
-    @required int? limit,
-    bool isDescend = false}) async {
+  Future<List> getHistoryMessages(
+      {@required int? from,
+      @required int? limit,
+      bool isDescend = false}) async {
     List msgs = await JmessageFlutter().getHistoryMessages(
         type: target.targetType,
         from: from,
