@@ -6,8 +6,22 @@ import 'package:platform/platform.dart';
 final String flutterLog = "| JMessage | Flutter | ";
 
 T getEnumFromString<T>(Iterable<T> values, String str) {
+  // print("values = ${values}, String = ${str}");
   return values.firstWhere((f) => f.toString().split('.').last == str,
       orElse: null);
+}
+
+JMMessageState getMessageStateString(Iterable values, String? str) {
+  if (str == null) {
+    return JMMessageState.none;
+  }
+
+  JMMessageState state;
+
+  state = values.firstWhere((f) => f.toString().split('.').last == str,
+      orElse: () => JMMessageState.none);
+
+  return state;
 }
 
 String? getStringFromEnum<T>(T) {
@@ -443,7 +457,7 @@ class JmessageFlutter {
     }
     print("Action - login: username=$username,pw=$password");
 
-    Map userJson = await _channel
+    Map? userJson = await _channel
         .invokeMethod('login', {'username': username, 'password': password});
     if (userJson == null) {
       return null;
@@ -554,22 +568,21 @@ class JmessageFlutter {
     return res; // {id: string; filePath: string}
   }
 
-  Future<dynamic> createMessage({
-    @required JMMessageType? type, // 消息类型
-    @required dynamic targetType,
+  Future<JMNormalMessage> createMessage(
+      {@required JMMessageType? type, // 消息类型
+      @required dynamic targetType,
 
-    /// (JMSingle | JMGroup | JMChatRoom)
-    String? text,
-    String? path,
-    String? fileName,
-    Map<dynamic, dynamic>? customObject,
-    double? latitude,
-    double? longitude,
-    int? scale,
-    String? address,
-    Map<dynamic, dynamic>? extras,
-    List<String>? atList
-  }) async {
+      /// (JMSingle | JMGroup | JMChatRoom)
+      String? text,
+      String? path,
+      String? fileName,
+      Map<dynamic, dynamic>? customObject,
+      double? latitude,
+      double? longitude,
+      int? scale,
+      String? address,
+      Map<dynamic, dynamic>? extras,
+      List<String>? atList}) async {
     Map param = targetType.toJson();
 
     if (extras != null) {
@@ -601,7 +614,7 @@ class JmessageFlutter {
 
   /// message 可能是 JMTextMessage | JMVoiceMessage | JMImageMessage | JMFileMessage | JMCustomMessage;
   /// NOTE: 不要传接收到的消息进去，只能传通过 createMessage 创建的消息。
-  Future<dynamic> sendMessage(
+  Future<JMNormalMessage> sendMessage(
       {@required JMNormalMessage? message,
       JMMessageSendOptions? sendOption}) async {
     Map param = message?.target?.targetType.toJson();
@@ -622,15 +635,14 @@ class JmessageFlutter {
     return res;
   }
 
-  Future<JMTextMessage> sendTextMessage({
-    @required dynamic type,
+  Future<JMTextMessage> sendTextMessage(
+      {@required dynamic type,
 
-    /// (JMSingle | JMGroup | JMChatRoom)
-    @required String? text,
-    JMMessageSendOptions? sendOption,
-    Map<dynamic, dynamic>? extras,
-    List<String> atUsers
-  }) async {
+      /// (JMSingle | JMGroup | JMChatRoom)
+      @required String? text,
+      JMMessageSendOptions? sendOption,
+      Map<dynamic, dynamic>? extras,
+      List<String>? atUsers}) async {
     Map param = type.toJson();
     Map optionMap = {};
     if (sendOption != null) {
@@ -644,7 +656,7 @@ class JmessageFlutter {
       param..addAll({'extras': extras});
     }
 
-    if(atUsers != null) {
+    if (atUsers != null) {
       param..addAll({'atUsers': atUsers});
     }
 
@@ -1867,7 +1879,7 @@ class JMMessageSendOptions {
   String notificationText;
 
   /// 设置这条消息的发送是否需要对方发送已读回执，false，默认值
-  bool needReadReceipt = false;
+  bool? needReadReceipt = false;
 
   Map toJson() {
     return {
@@ -1992,7 +2004,8 @@ enum JMMessageState {
   upload_succeed, // 上传成功
   upload_failed, // 上传失败
   download_failed, // 接收消息时自动下载资源失败
-  black_list //黑名单发送失败状态
+  black_list, //黑名单发送失败状态
+  none,
 }
 
 class JMNormalMessage {
@@ -2004,14 +2017,12 @@ class JMNormalMessage {
   int createTime; // 发送消息时间
   Map<dynamic, dynamic> extras; // 附带的键值对
   dynamic target; // JMUserInfo | JMGroupInfo
-  int msgState; // 服务器消息状态 0正常 1删除
+  int? msgState; // 服务器消息状态 0正常 1删除
 
   /// 消息是否删除 0正常 1删除
-  int delFlag;
+  int? delFlag;
 
-  
-
-  bool get isDelete => delFlag == 1;
+  bool? get isDelete => delFlag == 1;
 
   Map toJson() {
     return {
@@ -2033,7 +2044,7 @@ class JMNormalMessage {
         createTime = json['createTime'],
         serverMessageId = json['serverMessageId'],
         isSend = json['isSend'],
-        state = getEnumFromString(JMMessageState.values, json['state']),
+        state = getMessageStateString(JMMessageState.values, json['state']),
         from = JMUserInfo.fromJson(json['from']),
         msgState = json['msgState'],
         delFlag = json['delFlag'],
@@ -2351,7 +2362,7 @@ class JMReceiveGroupAdminApprovalEvent {
 
 class JMGroupInfo {
   String id; // 群组 id
-  String name; // 群组名称
+  String? name; // 群组名称
   String desc; // 群组描述
   int level; // 群组等级，默认等级 4
   String owner; // 群主的 username
@@ -2482,7 +2493,7 @@ class JMConversationInfo {
   String title; // 会话标题
   int unreadCount; // 未读消息数
   dynamic target; // JMUserInfo or JMGroupInfo or JMChatRoom
-  dynamic latestMessage; // 最近的一条消息对象。如果不存在消息，则 conversation 对象中没有该属性。
+  JMNormalMessage? latestMessage; // 最近的一条消息对象。如果不存在消息，则 conversation 对象中没有该属性。
   Map<dynamic, dynamic> extras;
 
   Map toJson() {
@@ -2512,8 +2523,10 @@ class JMConversationInfo {
         break;
     }
 
-    latestMessage =
-        JMNormalMessage.generateMessageFromJson(json['latestMessage']);
+    if (json['latestMessage'] != null) {
+      latestMessage =
+          JMNormalMessage.generateMessageFromJson(json['latestMessage']);
+    }
   }
 
   bool isMyMessage(dynamic message) {
