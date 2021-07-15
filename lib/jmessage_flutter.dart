@@ -2052,7 +2052,7 @@ enum JMMessageState {
 class JMNormalMessage {
   String id; // 本地数据库中的消息 id
   JMMessageState state; // 消息的状态
-  String serverMessageId; // 对应服务器端的消息 id，只用于在服务端查询问题
+  String? serverMessageId; // 对应服务器端的消息 id，只用于在服务端查询问题
   bool isSend; // 消息是否由当前用户发出。true：为当前用户发送；false：为对方用户发送。
   JMUserInfo from; // 消息发送者对象
   int createTime; // 发送消息时间
